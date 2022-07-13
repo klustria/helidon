@@ -146,6 +146,7 @@ public interface GrpcServerConfiguration {
     /**
      * A {@link GrpcServerConfiguration} builder.
      */
+    // Add annotation Config
     final class Builder implements io.helidon.common.Builder<Builder, GrpcServerConfiguration> {
         private static final AtomicInteger GRPC_SERVER_COUNTER = new AtomicInteger(1);
 
@@ -285,6 +286,7 @@ public interface GrpcServerConfiguration {
             return this;
         }
 
+        // Add annotation
         String name() {
             return name;
         }

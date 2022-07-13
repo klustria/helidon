@@ -25,6 +25,13 @@
 
 include::{rootdir}/includes/mp.adoc[]
 
+== ToC
+
+- <<Overview, Overview>>
+- <<Maven Coordinates, Maven Coordinates>>
+- <<Building a gRPC Client, Building a gRPC Client>>
+
+== Overview
 Building Java gRPC clients using the Helidon MP gRPC APIs is very simple and removes a lot of the boiler plate code typically
 associated to more traditional approaches to writing gRPC Java clients. At it simplest a gRPC Java client can be written using
 nothing more than a suitably annotated interface.
@@ -127,6 +134,10 @@ public interface StringService {
 For a gRPC client to connect to a server it requires a Channel. The Helidon MP gRPC APIs provide a way to inject channels into
 CDI beans that require them.
 
+Config sources can be configured using the following properties.
+
+include::{rootdir}/includes/config/io.helidon.grpc.client.GrpcChannelDescriptor.adoc[]
+
 Channels are configured in the `grpc` section of the Helidon application configuration. The examples below use an `application.yaml`
 file but there are many other ways to use and override xref:../config/introduction.adoc[configuration in Helidon]
 
@@ -134,10 +145,10 @@ file but there are many other ways to use and override xref:../config/introducti
 .application.yaml
 ----
 grpc:
-  channels:                <1>
-    test-server:           <2>
-      host: localhost      <3>
-      port: 1408           <4>
+  channels:                # <1>
+    test-server:           # <2>
+      host: localhost      # <3>
+      port: 1408           # <4>
 ----
 <1> Channels are configured in the`channels` section
 <2> Each sub-section is the Channel name that is then used to refer to this Channel in the application code
@@ -162,6 +173,9 @@ The above example shows two channel configurations, one named `london` and the o
 
 ==== Configuring TLS
 It is also possible to configure a Channel to use TLS if the server is using TLS.
+
+include::{rootdir}/includes/config/io.helidon.grpc.core.GrpcTlsDescriptor.adoc[]
+
 
 [source,yaml]
 .application.yaml
@@ -215,8 +229,8 @@ external client does. To inject an in-process channel a different qualifier anno
 [source,java]
 .gRPC in-Process Channel Injection
 ----
-    @Inject                  <1>
-    @InProcessGrpcChannel    <2>
+    @Inject                  // <1>
+    @InProcessGrpcChannel    // <2>
     private Channel channel;
 ----
 <1> The `@Inject` annotation is used the same as previously.
@@ -236,10 +250,11 @@ The field is then annotated so that CDI will inject the client proxy into the fi
 @ApplicationScoped
 public class Client {
 
-    @Inject                                  <1>
-    @GrpcProxy                        <2>
-    @GrpcChannel(name = "test-server")       <3>
+    @Inject                                  // <1>
+    @GrpcProxy                        // <2>
+    @GrpcChannel(name = "test-server")       // <3>
     private StringService stringService;
+}
 ----
 
 <1> The `@Inject` annotation tells the CDI to inject the client implementation; the gRPC MP APIs have a bean provider that does this.
