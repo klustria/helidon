@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import io.helidon.common.configurable.Resource;
 import io.helidon.security.jwt.JwtException;
+import io.helidon.security.jwt.SecurityProvider;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,7 @@ public class JwkKeysTest {
 
     @BeforeAll
     public static void init() {
+        SecurityProvider.loadJipher();
         customKeys = JwkKeys.builder()
                 .resource(Resource.create("jwk_data.json"))
                 .build();

@@ -59,6 +59,8 @@ public class HttpAuthProviderBuilderTest {
 
     @BeforeAll
     public static void initClass() {
+        SecurityProvider.loadJipher();
+
         SecureUserStore us = userStore();
 
         security = Security.builder()

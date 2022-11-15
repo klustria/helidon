@@ -50,6 +50,10 @@ import static org.mockito.Mockito.when;
 public abstract class HttpSignProviderTest {
     abstract HttpSignProvider getProvider();
 
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     public void testInboundSignatureRsa() throws ExecutionException, InterruptedException {
         Map<String, List<String>> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);

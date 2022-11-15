@@ -16,6 +16,9 @@
 
 package io.helidon.security.jwt;
 
+import java.security.Provider;
+import java.security.Security;
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.json.JsonObject;
@@ -24,6 +27,7 @@ import io.helidon.common.configurable.Resource;
 import io.helidon.security.jwt.EncryptedJwt.SupportedAlgorithm;
 import io.helidon.security.jwt.jwk.JwkKeys;
 
+import com.oracle.pic.commons.crypto.JCEProviders;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +45,12 @@ public class EncryptedJwtTest {
 
     private static JwkKeys jwkKeys;
     private static SignedJwt signedJwt;
+
+    static {
+        SecurityProvider.loadJipher();
+        // Security.insertProviderAt(new com.oracle.jipher.provider.JipherJCE(), 1);
+        System.out.println("Jipher InsertProvider: " + Arrays.toString(Security.getProviders()));
+    }
 
     @BeforeAll
     public static void init() {
@@ -115,8 +125,8 @@ public class EncryptedJwtTest {
                 .build();
         EncryptedJwt encryptedSecond = builder(signedJwt)
                 .jwks(jwkKeys, "RS_512")
-                .algorithm(SupportedAlgorithm.RSA_OAEP_256)
-                .encryption(SupportedEncryption.A128CBC_HS256)
+                .algorithm(SupportedAlgorithm.RSA_OAEP)
+                .encryption(SupportedEncryption.A256CBC_HS512)
                 .build();
         assertThat(encryptedOne.token(), not(encryptedSecond.token()));
 

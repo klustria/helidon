@@ -32,6 +32,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Unit test for {@link HttpAuthUtil}.
  */
 public class HttpAuthUtilTest {
+
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     public void positiveTestLong() throws Exception {
         testToAndBack(45545554L);

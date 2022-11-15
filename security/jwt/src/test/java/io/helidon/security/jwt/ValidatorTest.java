@@ -26,6 +26,10 @@ import static org.junit.jupiter.api.Assertions.fail;
  * Unit test for {@link Validator}.
  */
 public class ValidatorTest {
+
+    static {
+        SecurityProvider.loadJipher();
+    }
     @Test
     public void testValidatorExample() {
         // javadoc of Validator

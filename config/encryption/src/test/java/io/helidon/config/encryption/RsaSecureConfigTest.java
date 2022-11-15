@@ -52,6 +52,8 @@ public class RsaSecureConfigTest {
 
         assertThat("We must have the correct configuration file", config.get("pwd3").type().isLeaf());
         assertThat("We must have the correct configuration file", configRequiresEncryption.get("pwd3").type().isLeaf());
+
+        SecurityProvider.loadJipher();
     }
 
     @Test

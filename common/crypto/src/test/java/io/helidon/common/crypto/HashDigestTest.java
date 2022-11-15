@@ -39,6 +39,10 @@ public class HashDigestTest {
     private static final Base64Value DATA_TO_SIGN_1 = Base64Value.create("Some data to be signed1");
     private static final Base64Value DATA_TO_SIGN_2 = Base64Value.create("Some data to be signed2");
 
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     private static Stream<ParameterWrapper> initParams() throws IllegalAccessException {
         List<ParameterWrapper> params = new ArrayList<>();
         List<Field> fields = Arrays.stream(HashDigest.class.getDeclaredFields())

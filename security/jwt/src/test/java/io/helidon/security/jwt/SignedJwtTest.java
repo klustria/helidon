@@ -56,6 +56,8 @@ public class SignedJwtTest {
 
     @BeforeAll
     public static void init() {
+        SecurityProvider.loadJipher();
+        
         auth0Keys = JwkKeys.builder()
                 .resource(Resource.create("auth0-jwk.json"))
                 .build();

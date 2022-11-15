@@ -37,6 +37,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class JwtTest {
     private static final Logger LOGGER = Logger.getLogger(JwtTest.class.getName());
 
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     public void testBuilderBasicJwt() {
         String id = UUID.randomUUID().toString();

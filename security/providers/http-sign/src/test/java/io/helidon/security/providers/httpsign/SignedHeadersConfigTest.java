@@ -37,6 +37,7 @@ public class SignedHeadersConfigTest {
 
     @BeforeAll
     public static void initClass() {
+        SecurityProvider.loadJipher();
         config = Config.create().get("security.providers");
     }
 

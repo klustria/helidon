@@ -34,6 +34,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.oracle.pic.commons</groupId>
+            <artifactId>core</artifactId>
+            <version>3.2.37</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.helidon.common</groupId>
             <artifactId>helidon-common</artifactId>
         </dependency>

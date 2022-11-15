@@ -28,6 +28,8 @@ public class HttpSignProviderConfigTest extends HttpSignProviderTest {
 
     @BeforeAll
     public static void initClass() {
+        SecurityProvider.loadJipher();
+
         Config config = Config.create();
 
         instance = HttpSignProvider.create(config.get("security.providers.0.http-signatures"));

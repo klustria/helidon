@@ -27,6 +27,10 @@ public class OutboundTargetDefinitionTest {
 
     private static final String OUTBOUND_SIGNATURE_KEY = "security.providers.0.http-signatures.outbound.0.signature";
 
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     public void testBuilderFromConfig() {
         Config config = Config.create();

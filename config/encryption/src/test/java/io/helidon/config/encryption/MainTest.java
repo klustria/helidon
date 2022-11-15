@@ -23,6 +23,7 @@ import java.util.Base64;
 import io.helidon.common.configurable.Resource;
 import io.helidon.common.pki.KeyConfig;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -34,6 +35,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  * Test Main class (cli).
  */
 public class MainTest {
+    @BeforeAll
+    public static void initClass() {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     public void testAesEncryption() {
         String masterPassword = "BigMasterPassowrd!!!";

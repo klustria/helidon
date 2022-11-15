@@ -58,6 +58,8 @@ public class EncryptionUtilTest {
 
         privateKey = kc.privateKey().orElseThrow(AssertionError::new);
         publicKey = kc.publicKey().orElseThrow(AssertionError::new);
+
+        SecurityProvider.loadJipher();
     }
 
     @Test
@@ -81,7 +83,7 @@ public class EncryptionUtilTest {
 
     private PublicKey generateDsaPublicKey() throws NoSuchAlgorithmException {
         KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA");
-        gen.initialize(1024);
+        gen.initialize(2048);
         KeyPair keyPair = gen.generateKeyPair();
         return keyPair.getPublic();
     }

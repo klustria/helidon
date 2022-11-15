@@ -49,7 +49,9 @@ public class AsymmetricCipherTest {
     private static final Map<Integer, Pair> GENERATED_KEYS = new HashMap<>();
 
     static {
-        for (Integer keySize : List.of(1024, 2048, 3072)) {
+        SecurityProvider.loadJipher();
+        // 1024 is not supported so remove it, increase to 4096
+        for (Integer keySize : List.of(2048, 3072, 4096)) {
             try {
                 GENERATED_KEYS.put(keySize, new Pair(keyPair(keySize), keyPair(keySize)));
             } catch (NoSuchAlgorithmException e) {

@@ -23,6 +23,7 @@ import io.helidon.config.ConfigValue;
 import io.helidon.config.ConfigValues;
 import io.helidon.config.MissingValueException;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.helidon.config.ConfigValues.simpleValue;
@@ -41,6 +42,11 @@ abstract class AbstractSecureConfigTest {
     abstract Config getConfig();
 
     abstract Config getConfigRequiresEncryption();
+
+    @BeforeAll
+    public static void initClass() {
+        SecurityProvider.loadJipher();
+    }
 
     @Test
     void testDeep() {

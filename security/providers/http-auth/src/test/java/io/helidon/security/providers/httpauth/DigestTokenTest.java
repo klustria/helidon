@@ -25,6 +25,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Unit test for {@link DigestToken}.
  */
 public class DigestTokenTest {
+
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     public void rfcExampleTest() {
         String header = "username=\"Mufasa\", realm=\"testrealm@host.com\", nonce=\"dcd98b7102dd2f0e8b11d0f600bfb0c093\", "

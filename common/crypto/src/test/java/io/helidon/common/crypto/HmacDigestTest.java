@@ -38,6 +38,10 @@ public class HmacDigestTest {
 
     private static final Base64Value DATA_TO_SIGN = Base64Value.create("Some data to be signed");
 
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     private static Stream<ParameterWrapper> initParams() throws IllegalAccessException {
         List<ParameterWrapper> params = new ArrayList<>();
         byte[] correctSecret = "someCorrectSecret".getBytes(StandardCharsets.UTF_8);

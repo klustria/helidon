@@ -16,6 +16,11 @@
 
 package io.helidon.grpc.server;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.security.Provider;
+import java.security.Security;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -53,14 +58,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Tests for gRPC server with SSL connections
  */
-public class SslIT {
+public class SslITTest {
 
     // ----- data members ---------------------------------------------------
 
     /**
      * The {@link java.util.logging.Logger} to use for logging.
      */
-    private static final Logger LOGGER = Logger.getLogger(SslIT.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SslITTest.class.getName());
 
     /**
      * The Helidon {@link GrpcServer} being tested.
@@ -83,10 +88,34 @@ public class SslIT {
     private static final String SERVER_CERT = "ssl/serverCert.pem";
     private static final String SERVER_KEY  = "ssl/serverKey.pem";
 
+    private static final String SUN_JSSE_PROVIDER_CLASSNAME =
+            "com.sun.net.ssl.internal.ssl.Provider";
+    public static final String JIPHER_JCE_PROVIDER_NAME = "JipherJCE";
+
     // ----- test lifecycle -------------------------------------------------
 
     @BeforeAll
-    public static void setup() throws Exception {
+    public static void JipherSetup() throws Exception {
+        System.setProperty("javax.net.ssl.trustStoreType", "jks");
+        Security.insertProviderAt(new com.oracle.jipher.provider.JipherJCE(), 1);
+
+        if (isClassFound(SUN_JSSE_PROVIDER_CLASSNAME)) {
+            // Replace default SunJSSE provider with an instance of the SunJSSE provider
+            // configured to use JipherJCE as its sole FIPS JCE provider.
+            Security.removeProvider("SunJSSE");
+
+            final Provider jsseProvider =
+                    createJsseProvider(SUN_JSSE_PROVIDER_CLASSNAME, JIPHER_JCE_PROVIDER_NAME);
+
+            // When the SunJSSE provider is configured with a FIPS JCE provider
+            // it does not add an alias from SSL > TLS. Add one for backwards compatibility.
+            jsseProvider.put("Alg.Alias.SSLContext.SSL", "TLS");
+
+            Security.insertProviderAt(jsseProvider, 2);
+        }
+
+        System.out.println("Security Providers: " + Arrays.toString(Security.getProviders()));
+
         LogConfig.configureRuntime();
 
         AvailablePortIterator ports = LocalPlatform.get().getAvailablePorts();
@@ -98,6 +127,30 @@ public class SslIT {
         grpcServer_1WaySSL = startGrpcServer(port1WaySSL, false /*mutual*/, false /*useConfig*/);
         grpcServer_2WaySSL = startGrpcServer(port2WaySSL, true /*mutual*/, false /*useConfig*/);
         grpcServer_2WaySSLConfig = startGrpcServer(port2WaySSLConfig, true/*mutual*/, true /*useConfig*/);
+    }
+
+    private static Provider createJsseProvider(String className, String providerName) {
+        try {
+            final Class<?> jsseClass = Class.forName(className);
+            final Constructor<?> constructor = jsseClass.getConstructor(String.class);
+            return (Provider) constructor.newInstance(providerName);
+        } catch (ClassNotFoundException
+                 | SecurityException
+                 | InstantiationException
+                 | InvocationTargetException
+                 | NoSuchMethodException
+                 | IllegalAccessException e) {
+            throw new IllegalStateException("Unable to find the provider class : " + className, e);
+        }
+    }
+
+    private static boolean isClassFound(String className) {
+        try {
+            Class.forName(className, false, null);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        return true;
     }
 
     @AfterClass

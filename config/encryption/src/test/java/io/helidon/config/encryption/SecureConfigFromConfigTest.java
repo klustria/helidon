@@ -44,6 +44,8 @@ public class SecureConfigFromConfigTest extends AbstractSecureConfigTest {
 
         assertThat("We must have the correct configuration file", config.get("pwd1").type().isLeaf());
         assertThat("We must have the correct configuration file", configRequiresEncryption.get("pwd1").type().isLeaf());
+
+        SecurityProvider.loadJipher();
     }
 
     @Override

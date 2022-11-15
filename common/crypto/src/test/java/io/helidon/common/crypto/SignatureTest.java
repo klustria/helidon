@@ -42,6 +42,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class SignatureTest {
     private static final SecureRandom RANDOM;
     static {
+        SecurityProvider.loadJipher();
         try {
             RANDOM = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
@@ -56,7 +57,7 @@ public class SignatureTest {
             generatedKeys.computeIfAbsent("ECDSA", mapKey -> new HashMap<>())
                     .put(keySize, keyPair("EC", keySize));
         }
-        for (Integer keySize : List.of(1024, 2048, 3072)) {
+        for (Integer keySize : List.of(2048, 3072, 4096)) {
             generatedKeys.computeIfAbsent("RSA", mapKey -> new HashMap<>())
                     .put(keySize, keyPair("RSA", keySize));
         }

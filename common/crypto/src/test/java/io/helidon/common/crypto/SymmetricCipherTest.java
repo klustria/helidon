@@ -40,6 +40,10 @@ public class SymmetricCipherTest {
     private static final char[] DEFAULT_PASSWORD = "test".toCharArray();
     private static final char[] INCORRECT_PASSWORD = "incorrect".toCharArray();
 
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     private static Stream<ParameterWrapper> initParams() throws IllegalAccessException {
         List<ParameterWrapper> symmetricCiphers = new ArrayList<>();
         List<Field> fields = Arrays.stream(SymmetricCipher.class.getDeclaredFields())

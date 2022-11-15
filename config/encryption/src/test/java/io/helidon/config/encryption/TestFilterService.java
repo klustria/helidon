@@ -18,6 +18,7 @@ package io.helidon.config.encryption;
 
 import io.helidon.config.Config;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -27,6 +28,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Test for automatic filter loading.
  */
 class TestFilterService {
+    @BeforeAll
+    public static void initClass() {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     void testFiltering() {
         Config config = Config.create().get("aes-current");

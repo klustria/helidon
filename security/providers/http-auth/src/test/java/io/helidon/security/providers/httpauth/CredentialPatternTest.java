@@ -28,6 +28,10 @@ class CredentialPatternTest {
 
     private final Pattern pattern = HttpBasicAuthProvider.CREDENTIAL_PATTERN;
 
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     void testPatternNormal() {
         Matcher m = pattern.matcher("user:password");

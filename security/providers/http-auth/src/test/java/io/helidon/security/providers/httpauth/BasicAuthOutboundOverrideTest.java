@@ -46,6 +46,11 @@ import static org.mockito.Mockito.when;
  * Unit test for basic authentication overrides for outbound calls.
  */
 public class BasicAuthOutboundOverrideTest {
+
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     void testSecureClientOverride() throws IOException {
         String user = "jack";

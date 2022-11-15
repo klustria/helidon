@@ -41,6 +41,11 @@ import static org.junit.jupiter.api.Assertions.fail;
  * Unit test for {@link HttpSignature}.
  */
 public class HttpSignatureTestOld {
+
+    static {
+        SecurityProvider.loadJipher();
+    }
+
     @Test
     public void testValid() {
         String validSignature = "keyId=\"rsa-key-1\",algorithm=\"rsa-sha256\","
