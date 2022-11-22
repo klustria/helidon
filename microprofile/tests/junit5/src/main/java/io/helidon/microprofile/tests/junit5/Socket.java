@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2022 Oracle and/or its affiliates.
+ * Copyright (c) 2022 Oracle and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.helidon.microprofile.tests.junit5;
 
-package io.helidon.scheduling;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.concurrent.ScheduledExecutorService;
+import javax.inject.Qualifier;
 
 /**
- * {@link io.helidon.scheduling.Scheduling Scheduled} task.
+ * Named socket Qualifier for {@code WebTarget}.
  */
-public interface Task {
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+public @interface Socket {
 
     /**
-     * Human readable description of the task invocation interval.
+     * Name of the socket.
      *
-     * @return interval description
+     * @return String with the name of the Socket
      */
-    String description();
-
-    /**
-     * {@link java.util.concurrent.ScheduledExecutorService Executor} used for invocation of scheduled tasks.
-     *
-     * @return used executor
-     */
-    ScheduledExecutorService executor();
+    String value();
 
 }
