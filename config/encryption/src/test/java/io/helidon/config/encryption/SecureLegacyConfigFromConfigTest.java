@@ -35,6 +35,8 @@ public class SecureLegacyConfigFromConfigTest extends AbstractSecureConfigTest {
 
     @BeforeAll
     public static void initClass() {
+        SecurityProvider.loadBCFIPS();
+
         config = Config.create().get("aes-legacy");
 
         configRequiresEncryption = Config.builder()
@@ -46,7 +48,6 @@ public class SecureLegacyConfigFromConfigTest extends AbstractSecureConfigTest {
         assertThat("We must have the correct configuration file", config.get("pwd1").type().isLeaf());
         assertThat("We must have the correct configuration file", configRequiresEncryption.get("pwd1").type().isLeaf());
 
-        SecurityProvider.loadJipher();
     }
 
     @Override

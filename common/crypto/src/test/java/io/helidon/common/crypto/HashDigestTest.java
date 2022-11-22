@@ -40,7 +40,7 @@ public class HashDigestTest {
     private static final Base64Value DATA_TO_SIGN_2 = Base64Value.create("Some data to be signed2");
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     private static Stream<ParameterWrapper> initParams() throws IllegalAccessException {

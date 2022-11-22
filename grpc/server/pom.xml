@@ -124,15 +124,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.oracle.pic.jipher</groupId>
-            <artifactId>jipher-jce</artifactId>
-            <version>10.24</version>
+            <groupId>bc-fips</groupId>
+            <artifactId>bc-fips</artifactId>
+            <version>1.0.2.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.oracle.pic.jipher</groupId>
-            <artifactId>jipher-pki</artifactId>
-            <version>10.6</version>
+            <groupId>bcpkix-fips</groupId>
+            <artifactId>bcpkix-fips</artifactId>
+            <version>1.0.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

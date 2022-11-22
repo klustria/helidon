@@ -35,7 +35,7 @@ public class HttpSignProviderBuilderTest extends HttpSignProviderTest {
 
     @BeforeAll
     public static void initClass() {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
 
         instance = HttpSignProvider.builder()
                 .addAcceptHeader(HttpSignHeader.AUTHORIZATION)

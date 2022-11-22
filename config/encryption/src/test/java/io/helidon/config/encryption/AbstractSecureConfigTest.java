@@ -45,7 +45,7 @@ abstract class AbstractSecureConfigTest {
 
     @BeforeAll
     public static void initClass() {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     @Test

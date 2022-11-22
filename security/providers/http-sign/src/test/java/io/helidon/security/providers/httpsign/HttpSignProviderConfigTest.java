@@ -28,7 +28,7 @@ public class HttpSignProviderConfigTest extends HttpSignProviderTest {
 
     @BeforeAll
     public static void initClass() {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
 
         Config config = Config.create();
 

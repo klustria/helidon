@@ -30,7 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 class TestFilterService {
     @BeforeAll
     public static void initClass() {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     @Test

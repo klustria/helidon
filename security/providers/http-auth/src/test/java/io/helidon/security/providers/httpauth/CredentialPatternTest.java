@@ -29,7 +29,7 @@ class CredentialPatternTest {
     private final Pattern pattern = HttpBasicAuthProvider.CREDENTIAL_PATTERN;
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     @Test

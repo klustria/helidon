@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class HttpSignatureTest {
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     @Test

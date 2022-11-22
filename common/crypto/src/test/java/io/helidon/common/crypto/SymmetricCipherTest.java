@@ -37,11 +37,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class SymmetricCipherTest {
 
     private static final String TEST_VALUE = "some value";
-    private static final char[] DEFAULT_PASSWORD = "test".toCharArray();
-    private static final char[] INCORRECT_PASSWORD = "incorrect".toCharArray();
+    // increase password to 14 or more characters as BCFIPS will fail
+    private static final char[] DEFAULT_PASSWORD = "testpassword12".toCharArray();
+    private static final char[] INCORRECT_PASSWORD = "incorrectpassword".toCharArray();
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     private static Stream<ParameterWrapper> initParams() throws IllegalAccessException {

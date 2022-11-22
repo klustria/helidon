@@ -34,6 +34,8 @@ public class SecureConfigFromBuilderTest extends AbstractSecureConfigTest {
 
     @BeforeAll
     public static void initClass() {
+        SecurityProvider.loadBCFIPS();
+
         // fromConfig tests with pkcs12, so here I test with unix like private key
         KeyConfig keyConfig = KeyConfig.keystoreBuilder()
                 .keystore(Resource.create(".ssh/keystore.p12"))
@@ -62,7 +64,6 @@ public class SecureConfigFromBuilderTest extends AbstractSecureConfigTest {
         assertThat("We must have the correct configuration file", config.get("pwd1").type().isLeaf());
         assertThat("We must have the correct configuration file", configRequiresEncryption.get("pwd1").type().isLeaf());
 
-        SecurityProvider.loadJipher();
     }
 
     @Override

@@ -34,7 +34,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class HttpAuthUtilTest {
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     @Test
@@ -72,7 +72,8 @@ public class HttpAuthUtilTest {
         Random r = new SecureRandom();
         r.nextBytes(salt);
         r.nextBytes(aesNonce);
-        Cipher cipher = HttpAuthUtil.cipher("pwd".toCharArray(), salt, aesNonce, Cipher.ENCRYPT_MODE);
+        // BCFIPS does not allow less than 14 characters password for key derivation
+        Cipher cipher = HttpAuthUtil.cipher("password012345".toCharArray(), salt, aesNonce, Cipher.ENCRYPT_MODE);
 
         assertThat(cipher, notNullValue());
     }

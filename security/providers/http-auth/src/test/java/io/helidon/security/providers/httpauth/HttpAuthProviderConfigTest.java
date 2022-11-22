@@ -64,7 +64,7 @@ public class HttpAuthProviderConfigTest {
 
     @BeforeAll
     public static void startIt() throws Throwable {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
 
         startServer(Security.create(Config.create().get("security")));
 

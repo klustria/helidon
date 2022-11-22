@@ -39,7 +39,7 @@ public class HmacDigestTest {
     private static final Base64Value DATA_TO_SIGN = Base64Value.create("Some data to be signed");
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     private static Stream<ParameterWrapper> initParams() throws IllegalAccessException {

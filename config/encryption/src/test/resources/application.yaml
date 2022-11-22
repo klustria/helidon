@@ -43,14 +43,26 @@ rsa-legacy:
 
 rsa-current:
   # Public key encrypted secret (can only be decrypted by private key)
-  pwd3: "${RSA-P=fXoVMRlWzlj4fUPnLYFm2h0hSqnKgJqzJLiSslSfmf5MLXRYxNT0MKDZfmGN1If1E4/TR0jeVW/myPUaAJnO3tpadi6AyWsyz6pmEt2mzXZ+yQa1Em0/6ORiqnR2NedyrtVkn8lWL2YIkWfqbNwHODB3jehJ/BPfXru0WNDNRw3jVlPA33FsLBJFeZSRPs+fu1jNu/SeSjvS23a0+rGHUR/zeDP+jqHGEEjiUb73RMRBgvaBxU3RPM2dJ4hWOMKssjYJeu6SOidc3Ej9HpL1XNw5lGfQrqU2u7Lkga1uKd7eW1hSQZQEypcAa6ZtXrKZS4sIXwKqyYt3mdPJaUnzOA==}"
+  # Note: Used AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP512_256 to encrypt via EncryptionUtil.encryptRsa
+  # provided EncryptionUtil.decryptRsa is changed to use the same algorithm as the
+  # current encryption, i.e. AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP256, does not work with BCFIPS
+  pwd3: "${RSA-P=U/dcncTIAp+pRPeA2srIEGq5OAundSt1vekkNlzkfrzr4/oTOsq+X2pcJCtfGEcR6GJzRk0G8/vxDMRV1ZrtH0AjeWyBLQmx/AgeJA68M1q0TsE5ATSWuh6hyuLqMCq3zzJVhJ7R23gguJSbYR1jqoaJDoGRYB24ppAC154JL7Mi6Ivx5RMDFmu/6u/oIRvM/5BN/W39cuC3/wxi6clCabf3MtdNpRIULHOU6dqYNHD8uq9W34j1OpIsloNz94JExSXbSbDsUS/hGiJIBl5l9SUsyb6pU/wELEaq93rPclOoj2zHxQjr++Z7SizqhRRVnJyCiiu4l2fHmRkgKrIqEw==}"
   # empty string
-  pwd5: "${RSA-P=JLRr1Tw0/AS6q4OITsVD5oFiLV/9hrDC6NiLkgXxkruQ1PHf85szIbR6OYbdNM9veqXQSlYjJhjnnp3aEuM3SV6zoVSnPGFr9IL0A0T+kV57V/Ss2iE2VdfrlbC1zMT0VWIQRyh7v8eKxxDzbCLDKF/r1/GarXdfJ/l6uY1GUjvBHvN0iBI+XPoV15YSTI+YDr9umH719KaHadxOQe7C4XLE2cxo3hq6XSrB0NYpTfQrheay50kwgHPYCQSwT0KA6JCjyCjOHMjpEIYXd7wxdVTN/VlDENlEdeBoK39vxaBzn7XMn+4bOzbRpXBpB/mFoJB1RawO9jH8CbdOWmH5aA==}"
+  # Note: Used AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP512_256 to encrypt via EncryptionUtil.encryptRsa
+  # provided EncryptionUtil.decryptRsa is changed to use the same algorithm as the
+  # current encryption, i.e. AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP256, does not work with BCFIPS
+  pwd5: "${RSA-P=XCl4TdWY45zjFKW6noNIdau6yH183hMLGWqqjLsT1zhmOnNxjF7nc/XkZi1tpT4vl+ypyZ4HKdUh2oQmhlN1ZYvnZkIYmru0xOQiGAsToc3fCGrz639QvBBpfeWEqOL7MyutPNSd0GqVFui4IHd35qTvBW2ynBs/vH1Cl3tfxGc9zj8/gQKQKIOX22mIVaVIrdg55HEs/iIQFRrRcFIzhIPSfWuobMeMSC3CX14jz8E2pdR81J+s2IU3H1WwJexBBvoQp8DHF/dDkzr4cPcAkVM16+kNB76bXwfJoLdo3MMvv/do7xeunlXx4+oW1NwMXxWfpySn1L1gxr2uhv/UEg==}"
   # wrong encryption
+  # Note: Used AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP512_256 to encrypt via EncryptionUtil.encryptRsa
+  # provided EncryptionUtil.decryptRsa is changed to use the same algorithm as the
+  # current encryption, i.e. AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP256, does not work with BCFIPS
   pwd10: "${RSA-P=not really encrypted}"
 
+  # Note: Used AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP512_256 to encrypt via EncryptionUtil.encryptRsa
+  # provided EncryptionUtil.decryptRsa is changed to use the same algorithm as the
+  # current encryption, i.e. AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP256, does not work with BCFIPS
   passwords: [
-    "${RSA-P=fXoVMRlWzlj4fUPnLYFm2h0hSqnKgJqzJLiSslSfmf5MLXRYxNT0MKDZfmGN1If1E4/TR0jeVW/myPUaAJnO3tpadi6AyWsyz6pmEt2mzXZ+yQa1Em0/6ORiqnR2NedyrtVkn8lWL2YIkWfqbNwHODB3jehJ/BPfXru0WNDNRw3jVlPA33FsLBJFeZSRPs+fu1jNu/SeSjvS23a0+rGHUR/zeDP+jqHGEEjiUb73RMRBgvaBxU3RPM2dJ4hWOMKssjYJeu6SOidc3Ej9HpL1XNw5lGfQrqU2u7Lkga1uKd7eW1hSQZQEypcAa6ZtXrKZS4sIXwKqyYt3mdPJaUnzOA==}"
+    "${RSA-P=U/dcncTIAp+pRPeA2srIEGq5OAundSt1vekkNlzkfrzr4/oTOsq+X2pcJCtfGEcR6GJzRk0G8/vxDMRV1ZrtH0AjeWyBLQmx/AgeJA68M1q0TsE5ATSWuh6hyuLqMCq3zzJVhJ7R23gguJSbYR1jqoaJDoGRYB24ppAC154JL7Mi6Ivx5RMDFmu/6u/oIRvM/5BN/W39cuC3/wxi6clCabf3MtdNpRIULHOU6dqYNHD8uq9W34j1OpIsloNz94JExSXbSbDsUS/hGiJIBl5l9SUsyb6pU/wELEaq93rPclOoj2zHxQjr++Z7SizqhRRVnJyCiiu4l2fHmRkgKrIqEw==}"
   ]
 
 aes-legacy:

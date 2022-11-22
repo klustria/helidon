@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class ValidatorTest {
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
     @Test
     public void testValidatorExample() {

@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 public class BasicAuthOutboundOverrideTest {
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     @Test

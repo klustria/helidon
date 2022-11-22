@@ -20,7 +20,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.Provider;
 import java.security.Security;
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -36,6 +35,7 @@ import io.helidon.grpc.core.GrpcTlsDescriptor;
 import io.helidon.grpc.server.test.Echo;
 import io.helidon.grpc.server.test.EchoServiceGrpc;
 
+import com.google.common.base.Preconditions;
 import com.oracle.bedrock.runtime.LocalPlatform;
 import com.oracle.bedrock.runtime.network.AvailablePortIterator;
 import io.grpc.Channel;
@@ -46,6 +46,7 @@ import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import org.bouncycastle.crypto.CryptoServicesRegistrar;
 import org.junit.AfterClass;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -88,45 +89,66 @@ public class SslITTest {
     private static final String SERVER_CERT = "ssl/serverCert.pem";
     private static final String SERVER_KEY  = "ssl/serverKey.pem";
 
-    private static final String SUN_JSSE_PROVIDER_CLASSNAME =
-            "com.sun.net.ssl.internal.ssl.Provider";
-    public static final String JIPHER_JCE_PROVIDER_NAME = "JipherJCE";
+    private static final String FIPS_APPROVED_ONLY_PROPERTY = "org.bouncycastle.fips.approved_only";
+    public static final String BC_FIPS_KEYSTORE_TYPE = "BCFKS";
+    public static final String BC_FIPS_PROVIDER_NAME = "BCFIPS";
+    private static final String JAVAX_KEYSTORE_TYPE_PROPERTY = "javax.net.ssl.keyStoreType";
+    private static final String SSL_KEY_STORE_TYPE = "ssl.keystore.type";
+    private static final String KEY_STORE_TYPE = "keystore.type";
+    private static final String SUN_JSSE_PROVIDER_CLASSNAME = "com.sun.net.ssl.internal.ssl.Provider";
 
     // ----- test lifecycle -------------------------------------------------
 
-    @BeforeAll
-    public static void JipherSetup() throws Exception {
+    static {
+        // For Java 9 or later, if your application uses a JKS format truststore, such as the default
+        // Java truststore, set the javax.net.ssl.trustStoreType system property to jks. See the Jipher
+        // Troubleshooting Guide for more details. Otherwise, remove this line if the truststore used by
+        // the application is in PKCS12 format or if truststore is not used at all.
         System.setProperty("javax.net.ssl.trustStoreType", "jks");
-        Security.insertProviderAt(new com.oracle.jipher.provider.JipherJCE(), 1);
+
+        // Set Bouncy Castle FIPS to FIPS approved-mode and register it at the top of the security provider list.
+        setSystemAndSecurityProperty(FIPS_APPROVED_ONLY_PROPERTY, "true");
+        Security.insertProviderAt(new org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider(), 1);
 
         if (isClassFound(SUN_JSSE_PROVIDER_CLASSNAME)) {
-            // Replace default SunJSSE provider with an instance of the SunJSSE provider
-            // configured to use JipherJCE as its sole FIPS JCE provider.
+            // Replace (default) SunJSSE provider with SunJSSE provider
+            // configured to use BCFIPS as its sole FIPS JCE provider
             Security.removeProvider("SunJSSE");
 
-            final Provider jsseProvider =
-                    createJsseProvider(SUN_JSSE_PROVIDER_CLASSNAME, JIPHER_JCE_PROVIDER_NAME);
+            // Set various system and security keystore type properties to BCFKS
+            Security.setProperty(KEY_STORE_TYPE, BC_FIPS_KEYSTORE_TYPE);
+            setSystemAndSecurityProperty(JAVAX_KEYSTORE_TYPE_PROPERTY, BC_FIPS_KEYSTORE_TYPE);
+            setSystemAndSecurityProperty(SSL_KEY_STORE_TYPE, BC_FIPS_KEYSTORE_TYPE);
+
+            final Provider sunJsseProvider = createJsseProvider(SUN_JSSE_PROVIDER_CLASSNAME, BC_FIPS_PROVIDER_NAME);
 
             // When the SunJSSE provider is configured with a FIPS JCE provider
             // it does not add an alias from SSL > TLS. Add one for backwards compatibility.
-            jsseProvider.put("Alg.Alias.SSLContext.SSL", "TLS");
+            sunJsseProvider.put("Alg.Alias.SSLContext.SSL", "TLS");
 
-            Security.insertProviderAt(jsseProvider, 2);
+            // Inserting immediately after the BCFIPS provider just prioritizes the provider over
+            // others when going through the default list getting provider by name will return that
+            // provider regardless of the position of the provider in the list
+            Security.insertProviderAt(sunJsseProvider, 2);
         }
 
-        System.out.println("Security Providers: " + Arrays.toString(Security.getProviders()));
+        Preconditions.checkArgument(
+                CryptoServicesRegistrar.setApprovedOnlyMode(true),
+                "Requires approved mode for compliance.");
+    }
 
-        LogConfig.configureRuntime();
+    private static void setSystemAndSecurityProperty(String name, String value) {
+        System.setProperty(name, value);
+        Security.setProperty(name, value);
+    }
 
-        AvailablePortIterator ports = LocalPlatform.get().getAvailablePorts();
-
-        int port1WaySSL = ports.next();
-        int port2WaySSL = ports.next();
-        int port2WaySSLConfig = ports.next();
-
-        grpcServer_1WaySSL = startGrpcServer(port1WaySSL, false /*mutual*/, false /*useConfig*/);
-        grpcServer_2WaySSL = startGrpcServer(port2WaySSL, true /*mutual*/, false /*useConfig*/);
-        grpcServer_2WaySSLConfig = startGrpcServer(port2WaySSLConfig, true/*mutual*/, true /*useConfig*/);
+    private static boolean isClassFound(String className) {
+        try {
+            Class.forName(className, false, null);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        return true;
     }
 
     private static Provider createJsseProvider(String className, String providerName) {
@@ -144,13 +166,19 @@ public class SslITTest {
         }
     }
 
-    private static boolean isClassFound(String className) {
-        try {
-            Class.forName(className, false, null);
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-        return true;
+    @BeforeAll
+    public static void setup() throws Exception {
+        LogConfig.configureRuntime();
+
+        AvailablePortIterator ports = LocalPlatform.get().getAvailablePorts();
+
+        int port1WaySSL = ports.next();
+        int port2WaySSL = ports.next();
+        int port2WaySSLConfig = ports.next();
+
+        grpcServer_1WaySSL = startGrpcServer(port1WaySSL, false /*mutual*/, false /*useConfig*/);
+        grpcServer_2WaySSL = startGrpcServer(port2WaySSL, true /*mutual*/, false /*useConfig*/);
+        grpcServer_2WaySSLConfig = startGrpcServer(port2WaySSLConfig, true/*mutual*/, true /*useConfig*/);
     }
 
     @AfterClass

@@ -46,7 +46,7 @@ class KeyConfigTest {
 
     @BeforeAll
     static void init() {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
         config = Config.create();
     }
 

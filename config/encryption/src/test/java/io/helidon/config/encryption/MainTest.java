@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class MainTest {
     @BeforeAll
     public static void initClass() {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     @Test

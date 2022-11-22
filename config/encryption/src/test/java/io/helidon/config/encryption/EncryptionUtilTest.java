@@ -49,6 +49,7 @@ public class EncryptionUtilTest {
 
     @BeforeAll
     public static void staticInit() {
+        SecurityProvider.loadBCFIPS();
         KeyConfig kc = KeyConfig.keystoreBuilder()
                 .keystore(Resource.create(".ssh/keystore.p12"))
                 .keystorePassphrase("j4c".toCharArray())
@@ -58,8 +59,6 @@ public class EncryptionUtilTest {
 
         privateKey = kc.privateKey().orElseThrow(AssertionError::new);
         publicKey = kc.publicKey().orElseThrow(AssertionError::new);
-
-        SecurityProvider.loadJipher();
     }
 
     @Test

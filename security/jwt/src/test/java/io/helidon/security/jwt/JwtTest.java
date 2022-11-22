@@ -38,7 +38,7 @@ public class JwtTest {
     private static final Logger LOGGER = Logger.getLogger(JwtTest.class.getName());
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     @Test

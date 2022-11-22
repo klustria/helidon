@@ -51,7 +51,7 @@ public abstract class HttpSignProviderTest {
     abstract HttpSignProvider getProvider();
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
     }
 
     @Test

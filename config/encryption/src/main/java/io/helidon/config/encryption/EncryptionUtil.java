@@ -80,7 +80,8 @@ public final class EncryptionUtil {
 
         try {
             Base64Value value = Base64Value.createFromEncoded(encryptedBase64);
-            return AsymmetricCipher.decrypt(AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP256, null, key, value).toDecodedString();
+            // AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP256 is not supported by BCFIPS so replace with this algorithm
+            return AsymmetricCipher.decrypt(AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP512_256, null, key, value).toDecodedString();
         } catch (ConfigEncryptionException e) {
             throw e;
         } catch (Exception e) {
@@ -131,7 +132,8 @@ public final class EncryptionUtil {
         }
         try {
             Base64Value value = Base64Value.create(secret);
-            return AsymmetricCipher.encrypt(AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP256, null, key, value).toBase64();
+            // AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP256 is not supported by BCFIPS so replace with this algorithm
+            return AsymmetricCipher.encrypt(AsymmetricCipher.ALGORITHM_RSA_ECB_OAEP512_256, null, key, value).toBase64();
         } catch (Exception e) {
             throw new ConfigEncryptionException("Failed to encrypt using RSA key", e);
         }

@@ -21,7 +21,6 @@ import java.lang.reflect.Modifier;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,7 +48,7 @@ public class AsymmetricCipherTest {
     private static final Map<Integer, Pair> GENERATED_KEYS = new HashMap<>();
 
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
         // 1024 is not supported so remove it, increase to 4096
         for (Integer keySize : List.of(2048, 3072, 4096)) {
             try {
@@ -64,7 +63,9 @@ public class AsymmetricCipherTest {
         List<ParameterWrapper> params = new ArrayList<>();
         List<Field> fields = Arrays.stream(AsymmetricCipher.class.getDeclaredFields())
                 .filter(it -> Modifier.isStatic(it.getModifiers()))
-                .filter(it -> it.getName().startsWith("ALGORITHM_"))
+                // Avoid ALGORITHM_RSA_ECB_OAEP256 and ALGORITHM_RSA_ECB_OAEP384 as they won't work with BCFIPS approved-mode
+                .filter(it -> it.getName().startsWith("ALGORITHM_") &&
+                        !(it.getName().endsWith("OAEP256") || it.getName().endsWith("OAEP384")))
                 .collect(Collectors.toList());
 
         for (Field field : fields) {
@@ -90,8 +91,9 @@ public class AsymmetricCipherTest {
 
     private static KeyPair keyPair(int keySize) throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-        keyGen.initialize(keySize, random);
+        // Rely on SecureRandom that is FIPS approved created by JCEPProviders.load() as using
+        // SecureRandom.getInstance("SHA1PRNG") will not work with BCFIPS
+        keyGen.initialize(keySize);
         return keyGen.generateKeyPair();
     }
 

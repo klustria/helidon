@@ -59,7 +59,7 @@ public class HttpAuthProviderBuilderTest {
 
     @BeforeAll
     public static void initClass() {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
 
         SecureUserStore us = userStore();
 
@@ -100,7 +100,8 @@ public class HttpAuthProviderBuilderTest {
         HttpDigestAuthProvider.Builder builder = HttpDigestAuthProvider.builder()
                 .realm("mic")
                 .optional(optional)
-                .digestServerSecret("pwd".toCharArray())
+                // BCFIPS does not allow less than 14 characters password for key derivation
+                .digestServerSecret("password012345".toCharArray())
                 .userStore(us);
 
         if (old) {
@@ -418,7 +419,8 @@ public class HttpAuthProviderBuilderTest {
                   buildDigest(HttpDigest.Qop.AUTH,
                               "jack",
                               "jackIsGreat",
-                              HttpDigestAuthProvider.nonce(in.toEpochMilli(), random, "pwd".toCharArray()),
+                              // BCFIPS does not allow less than 14 characters password for key derivation
+                              HttpDigestAuthProvider.nonce(in.toEpochMilli(), random, "password012345".toCharArray()),
                               "mic"));
 
         AuthenticationResponse response = context.atnClientBuilder()
@@ -489,7 +491,8 @@ public class HttpAuthProviderBuilderTest {
                   buildDigest(HttpDigest.Qop.AUTH,
                               "jack",
                               "jackIsGreat",
-                              HttpDigestAuthProvider.nonce(System.currentTimeMillis(), random, "pwd".toCharArray()),
+                              // BCFIPS does not allow less than 14 characters password for key derivation
+                              HttpDigestAuthProvider.nonce(System.currentTimeMillis(), random, "password012345".toCharArray()),
                               "wrongRealm"));
         AuthenticationResponse response = context.atnClientBuilder()
                 .explicitProvider("digest")
@@ -553,7 +556,8 @@ public class HttpAuthProviderBuilderTest {
         return buildDigest(qop,
                            user,
                            password,
-                           HttpDigestAuthProvider.nonce(System.currentTimeMillis(), random, "pwd".toCharArray()),
+                           // BCFIPS does not allow less than 14 characters password for key derivation
+                           HttpDigestAuthProvider.nonce(System.currentTimeMillis(), random, "password012345".toCharArray()),
                            "mic");
     }
 

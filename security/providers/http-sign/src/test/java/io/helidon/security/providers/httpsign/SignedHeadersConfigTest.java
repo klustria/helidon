@@ -37,7 +37,7 @@ public class SignedHeadersConfigTest {
 
     @BeforeAll
     public static void initClass() {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
         config = Config.create().get("security.providers");
     }
 

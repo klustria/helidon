@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import io.helidon.common.Base64Value;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -42,7 +43,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class SignatureTest {
     private static final SecureRandom RANDOM;
     static {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
         try {
             RANDOM = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
@@ -87,7 +88,9 @@ public class SignatureTest {
 
     private static KeyPair keyPair(String generator, int keySize) throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance(generator);
-        keyGen.initialize(keySize, RANDOM);
+        // Rely on SecureRandom created by JCEPProviders.load() as SecureRandom.getInstance("SHA1PRNG")
+        // is not supported by BCFIPS
+        keyGen.initialize(keySize);
         return keyGen.generateKeyPair();
     }
 
@@ -100,6 +103,16 @@ public class SignatureTest {
         assertThat(digest.toBytes(), not(value.toBytes()));
         signature.verify(value, digest);
         assertThat(signature.verify(value, digest), is(true));
+    }
+
+    @Test
+    public void keyPairTest() {
+        try {
+            System.out.println("KeyPair: " + keyPair("RSA", 2048));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private static class ParameterWrapper {

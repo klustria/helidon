@@ -47,8 +47,7 @@ public class EncryptedJwtTest {
     private static SignedJwt signedJwt;
 
     static {
-        SecurityProvider.loadJipher();
-        // Security.insertProviderAt(new com.oracle.jipher.provider.JipherJCE(), 1);
+        SecurityProvider.loadBCFIPS();
         System.out.println("Jipher InsertProvider: " + Arrays.toString(Security.getProviders()));
     }
 
@@ -125,6 +124,7 @@ public class EncryptedJwtTest {
                 .build();
         EncryptedJwt encryptedSecond = builder(signedJwt)
                 .jwks(jwkKeys, "RS_512")
+                // RSA_OAEP_256 algorithm is not supported by BCFIPS
                 .algorithm(SupportedAlgorithm.RSA_OAEP)
                 .encryption(SupportedEncryption.A256CBC_HS512)
                 .build();

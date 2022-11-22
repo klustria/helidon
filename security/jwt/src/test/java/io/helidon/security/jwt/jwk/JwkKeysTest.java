@@ -48,7 +48,7 @@ public class JwkKeysTest {
 
     @BeforeAll
     public static void init() {
-        SecurityProvider.loadJipher();
+        SecurityProvider.loadBCFIPS();
         customKeys = JwkKeys.builder()
                 .resource(Resource.create("jwk_data.json"))
                 .build();
